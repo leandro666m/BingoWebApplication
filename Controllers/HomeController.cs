@@ -6,32 +6,28 @@ using System.Diagnostics.CodeAnalysis;
 namespace BingoWebApplication.Controllers {
     public class HomeController : Controller {
         private readonly ILogger<HomeController> _logger;
-
         public HomeController( ILogger<HomeController> logger ) {
             _logger = logger;
         }
-
-        public IActionResult Index( ) {
-             
-            return View( GetBingoCard( ) );
-        }
-
         public IActionResult Privacy( ) {
             return View( );
         }
-
         [ResponseCache( Duration = 0, Location = ResponseCacheLocation.None, NoStore = true )]
         public IActionResult Error( ) {
             return View( new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier } );
         }
 
+        public IActionResult Index( ) {
+            List<Carton> listCartones = new List<Carton>();
+            for (int i=0; i<4;i++ ) {
+                listCartones.Add( GetBingoCard( ) );
+            }
+            return View( listCartones );//que se mande una Lista de 4 Cartones
+        }
         public Carton GetBingoCard( ) {
-
             //-------------------------------generamos los numeros del carton
             var genRandom = new Random();
-            //var carton = new int[3, 9];
             Carton carton = new Carton();
-
 
             for ( int c = 0; c < 9; c++ ) {
                 for ( int f = 0; f < 3; f++ ) {
@@ -137,24 +133,8 @@ namespace BingoWebApplication.Controllers {
 
             }//while
 
-            /*-------------------------------mostramos el carton
-            Console.WriteLine( "\n\n\n\n--------------------------------------------------" );
-            for ( int f = 0; f < 3; f++ ) {
-                for ( int c = 0; c < 9; c++ ) {
-                    if ( c == 0 ) {
-                        Console.Write( "  |" );
-                    }
-                    if ( carton[f, c] == 0 ) { //si es cero, mostramos espacios
-                        Console.Write( "    |" );
-                    } else {
-                        Console.Write( $" {carton[f, c]:00} |" );
-                    }
-                }
-                Console.WriteLine( );
-            }*/
-
             return carton;
-            
-        }//main
-    }
-}
+        } //GetBingoCard
+
+    }//class
+}//namespace
