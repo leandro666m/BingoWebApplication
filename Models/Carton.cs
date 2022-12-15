@@ -1,5 +1,5 @@
 ﻿namespace BingoWebApplication.Models {
     public class Carton {
-        public int[,]? Matriz { get; set; } = new int[3,9];
+        public ElementoNumero[,]? Matriz { get; set; } = new ElementoNumero[3, 9];
     }
 }

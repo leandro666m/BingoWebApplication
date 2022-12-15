@@ -28,6 +28,7 @@ namespace BingoWebApplication.Controllers {
             //-------------------------------generamos los numeros del carton
             var genRandom = new Random();
             Carton carton = new Carton();
+            ElementoNumero elemNumero = new ElementoNumero();
 
             for ( int c = 0; c < 9; c++ ) {
                 for ( int f = 0; f < 3; f++ ) {
@@ -54,7 +55,8 @@ namespace BingoWebApplication.Controllers {
 
                     }//while
 
-                    carton.Matriz[f, c] = nuevoNumero; //asignacion
+                    elemNumero.numero = nuevoNumero;
+                    carton.Matriz[f, c] = elemNumero; //asignacion
 
                 }//for de filas
             }//for de columnas
