@@ -1,4 +1,7 @@
-﻿@{    ViewData["Title"] = "Home Page";  }
+﻿@{
+    ViewData["Title"] = "Home Page";
+    
+}
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
@@ -13,10 +16,14 @@
         <div class="row border bg-light">
         @{  for ( int c = 0; c < 9; c++ ) {
           <div class="col numero">
-           @if ( @item.Matriz[f, c] == 0 ) {
+           @if ( @item.Matriz[f, c].Numero == 0 ) {
               <p> </p>
            } else {
-              <p>@item.Matriz[f, c]</p>
+                    @if ( @item.Matriz[f, c].Acertado ) {
+                        <p style="background-color: red">@item.Matriz[f, c].Numero</p>
+                    }else{
+                        <p>@item.Matriz[f, c].Numero </p>
+                    }
            }
           </div>
            }
@@ -27,4 +34,12 @@
     </div>
  }//foreach carton
 }
----------------------
+
+
+<div>
+
+    <button type="button" onclick="location.href='@Url.Action("LanzarBolilla", "Home")'"
+    class="btn btn-primary">Lanzar Bolilla</button>
+
+    <h3> @ViewData["bolilla"] @ViewBag.bolilla </h3>
+</div>

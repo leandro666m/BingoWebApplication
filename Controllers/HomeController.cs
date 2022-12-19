@@ -1,11 +1,13 @@
 ﻿using BingoWebApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+
 
 namespace BingoWebApplication.Controllers {
     public class HomeController : Controller {
         private readonly ILogger<HomeController> _logger;
+        List<Carton> listCartones = new List<Carton>();
+
         public HomeController( ILogger<HomeController> logger ) {
             _logger = logger;
         }
@@ -18,21 +20,20 @@ namespace BingoWebApplication.Controllers {
         }
 
         public IActionResult Index( ) {
-            List<Carton> listCartones = new List<Carton>();
+            
             for (int i=0; i<4;i++ ) {
                 listCartones.Add( GetBingoCard( ) );
             }
             return View( listCartones );//que se mande una Lista de 4 Cartones
         }
+
         public Carton GetBingoCard( ) {
             //-------------------------------generamos los numeros del carton
             var genRandom = new Random();
             Carton carton = new Carton();
-            ElementoNumero elemNumero = new ElementoNumero();
 
             for ( int c = 0; c < 9; c++ ) {
                 for ( int f = 0; f < 3; f++ ) {
-
                     int nuevoNumero = 0;
                     bool encontreUnoNuevo = true;
                     while ( encontreUnoNuevo ) { //V
@@ -42,10 +43,9 @@ namespace BingoWebApplication.Controllers {
                             nuevoNumero = genRandom.Next( c * 10, c * 10 + 10 ); //4*10=40  4*10+10=50 Next(40,50)  del 40 al 49
                         }
 
-
                         //buscamos si el nuevoNumero existe en la columna
                         for ( int f2 = 0; f2 < 3; f2++ ) {
-                            if ( carton.Matriz[f2, c] == nuevoNumero ) {
+                            if ( carton.Matriz[f2, c].Numero == nuevoNumero ) {
                                 encontreUnoNuevo = true;
                                 break; //volver al while()
                             } else {
@@ -55,9 +55,7 @@ namespace BingoWebApplication.Controllers {
 
                     }//while
 
-                    elemNumero.numero = nuevoNumero;
-                    carton.Matriz[f, c] = elemNumero; //asignacion
-
+                    carton.Matriz[f, c].Numero = nuevoNumero; //asignacion
                 }//for de filas
             }//for de columnas
 
@@ -66,10 +64,10 @@ namespace BingoWebApplication.Controllers {
             for ( int c = 0; c < 9; c++ ) {
                 for ( int f = 0; f < 3; f++ ) {
                     for ( int k = f + 1; k < 3; k++ ) {//compara el elem con el de la sig fila
-                        if ( carton.Matriz[f, c] > carton.Matriz[k, c] ) {//se hace el intercambio
-                            int aux = carton.Matriz[f, c];
-                            carton.Matriz[f, c] = carton.Matriz[k, c];
-                            carton.Matriz[k, c] = aux;
+                        if ( carton.Matriz[f, c].Numero > carton.Matriz[k, c].Numero ) {//se hace el intercambio
+                            int aux = carton.Matriz[f, c].Numero;
+                            carton.Matriz[f, c].Numero = carton.Matriz[k, c].Numero;
+                            carton.Matriz[k, c].Numero = aux;
                         }
                     }
                 }
@@ -85,7 +83,7 @@ namespace BingoWebApplication.Controllers {
                 //-------------------------------------------------------------
 
                 //si ya tiene cero, no borrar (ya esta borrado!)
-                if ( carton.Matriz[filaABorrar, columnaABorrar] == 0 ) { continue; }
+                if ( carton.Matriz[filaABorrar, columnaABorrar].Numero == 0 ) { continue; }
 
 
                 //-------------------------------------------------------------
@@ -93,14 +91,14 @@ namespace BingoWebApplication.Controllers {
                 //contamos cuantos ceros hay en esta FILA
                 var cerosEnFila = 0;
                 for ( int c = 0; c < 9; c++ ) {
-                    if ( carton.Matriz[filaABorrar, c] == 0 ) {
+                    if ( carton.Matriz[filaABorrar, c].Numero == 0 ) {
                         cerosEnFila++;
                     }
                 }
                 //contamos cuantos ceros hay en esta COLUMNA
                 var cerosEnColumna = 0;
                 for ( int f = 0; f < 3; f++ ) {
-                    if ( carton.Matriz[f, columnaABorrar] == 0 ) cerosEnColumna++;
+                    if ( carton.Matriz[f, columnaABorrar].Numero == 0 ) cerosEnColumna++;
                 }
 
                 // si ya hay 4 ceros en la fila o si ya hay 2 ceros en la columna => no hago nada
@@ -114,7 +112,7 @@ namespace BingoWebApplication.Controllers {
                 var itemsPorColuma = new int[9];
                 for ( int c = 0; c < 9; c++ ) {
                     for ( int f = 0; f < 3; f++ ) {
-                        if ( carton.Matriz[f, c] != 0 ) itemsPorColuma[c]++;
+                        if ( carton.Matriz[f, c].Numero != 0 ) itemsPorColuma[c]++;
                     }
                 }
                 //contamos cuantas columnas hay con un solo numero
@@ -130,13 +128,35 @@ namespace BingoWebApplication.Controllers {
 
                 //-------------------------------------------------------------//-------------------------------------------------------------
                 //si no se cumplieron las opciones anteriores, BORRAR EL NUMERO
-                carton.Matriz[filaABorrar, columnaABorrar] = 00;
+                carton.Matriz[filaABorrar, columnaABorrar].Numero = 00;
                 borrados++;
 
             }//while
 
             return carton;
         } //GetBingoCard
+
+        public IActionResult LanzarBolilla( ) {
+            //tira bolilla
+            int bolilla = new Random().Next( 1, 91 );
+            //comprobar si el num está en los 4 cartones
+            ViewData["bolilla"]=bolilla;
+            ViewBag.bolilla = bolilla;
+
+            foreach ( Carton carton in listCartones ) {
+                for ( int f = 0; f < 3; f++ ) {
+                    for ( int c = 0; c < 9; c++ ) {
+                        if ( carton.Matriz[f, c].Numero == bolilla ) {
+                            //numero encontrado
+                            carton.Matriz[f, c].Acertado = true;
+                        }//if 
+                    }//for columnas
+                }//for filas
+            }//foreach
+
+            return View( listCartones );
+        }//void
+
 
     }//class
 }//namespace
