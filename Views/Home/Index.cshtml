@@ -1,45 +1,49 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
-    
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <h1 class="display-6">Mi Bingo por tu cogote</h1>
- </div>
+</div>
+
+<div>
+    <h2>Bolilla: @Html.Display("bolilla") </h2>
+    <h2>ViewBag Bolilla: @ViewBag.Bolilla </h2>
+    <a asp-action="LanzarBolilla" asp-controller="Home" class="btn btn-primary"> Lanzar </a>
+    
+    @Html.ActionLink("Lanzar", "LanzarBolilla", "Home", null, new { @class = "btn btn-primary" })
+
+</div>
+
+
 
 
 @model List<Carton>
-@{ foreach( var item in Model ) {
-    <div class="mt-5 container px-5 border" style="width:800px">
-    @{ for ( int f = 0; f < 3; f++ ) {
-        <div class="row border bg-light">
-        @{  for ( int c = 0; c < 9; c++ ) {
-          <div class="col numero">
-           @if ( @item.Matriz[f, c].Numero == 0 ) {
-              <p> </p>
-           } else {
-                    @if ( @item.Matriz[f, c].Acertado ) {
-                        <p style="background-color: red">@item.Matriz[f, c].Numero</p>
-                    }else{
-                        <p>@item.Matriz[f, c].Numero </p>
-                    }
-           }
-          </div>
-           }
-        }
+@{
+    foreach ( var item in Model ) {
+        <div class="mt-5 container px-5 border" style="width:800px">
+            @{
+                for ( int f = 0; f < 3; f++ ) {
+                    <div class="row border bg-light">
+                        @{
+                            for ( int c = 0; c < 9; c++ ) {
+                                <div class="col numero">
+                                    @if ( @item.Matriz[f, c].Numero == 0 ) {
+                                        <p> </p>
+                                    } else {
+                                        @if ( @item.Matriz[f, c].Acertado ) {
+                                            <p style="background-color: red">@item.Matriz[f, c].Numero</p>
+                                        } else {
+                                            <p>@item.Matriz[f, c].Numero </p>
+                                        }
+                                    }
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+            }
         </div>
-     }
-  }
-    </div>
- }//foreach carton
+    }//foreach carton
 }
 
-
-<div>
-
-    <button type="button" onclick="location.href='@Url.Action("LanzarBolilla", "Home")'"
-    class="btn btn-primary">Lanzar Bolilla</button>
-
-    <h3> @ViewData["bolilla"] @ViewBag.bolilla </h3>
-</div>
