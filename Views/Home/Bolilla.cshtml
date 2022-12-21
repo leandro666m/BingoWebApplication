@@ -1,0 +1,8 @@
+﻿<div>
+    <h2>Bolilla: @Html.Display("bolilla") </h2>
+    <h2>ViewBag Bolilla: @ViewBag.Bolilla </h2>
+    <a asp-action="LanzarBolilla" asp-controller="Home" class="btn btn-primary"> Lanzar </a>
+
+    @Html.ActionLink("Lanzar", "LanzarBolilla", "Home", null, new { @class = "btn btn-primary" })
+
+</div>

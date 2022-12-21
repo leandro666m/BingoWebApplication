@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace BingoWebApplication.Controllers {
     public class HomeController : Controller {
         private readonly ILogger<HomeController> _logger;
-        public List<Carton> listCartones = new List<Carton>();
+        public static List<Carton> listCartones = new List<Carton>();
 
         public HomeController( ILogger<HomeController> logger ) {
             _logger = logger;
@@ -24,6 +24,7 @@ namespace BingoWebApplication.Controllers {
         public IActionResult Index( ) {
             if ( modificado!=true) {
                 for ( int i = 0; i < 4; i++ ) {
+                    Console.WriteLine( "cargando cartones");
                     listCartones.Add( GetBingoCard( ) );
                 }
             }
@@ -142,29 +143,24 @@ namespace BingoWebApplication.Controllers {
             return carton;
         } //GetBingoCard
 
-        public int bolilla;
-        public void LanzarBolilla( ) {
+        public int bolilla=0;
+        public int LanzarBolilla( ) {
             //tira bolilla
-            bolilla = new Random().Next( 1, 91 );
-            ViewBag.Bolilla = bolilla;
-            Console.WriteLine( "Bolilla", bolilla );
+            bolilla = new Random( ).Next( 1, 91 );
 
             //comprobar si el num está en los 4 cartones
-            foreach ( Carton carton in listCartones ) {
-                for ( int f = 0; f < 3; f++ ) {
-                    for ( int c = 0; c < 9; c++ ) {
-                        if ( carton.Matriz[f, c].Numero == bolilla ) {
+            foreach (Carton carton in listCartones) {
+                for (int f = 0; f < 3; f++) {
+                    for (int c = 0; c < 9; c++) {
+                        if (carton.Matriz[f, c].Numero == bolilla) {
                             //numero encontrado
                             carton.Matriz[f, c].Acertado = true;
                             modificado = true;
-                            Console.WriteLine( "Numero encontrado: ", carton.Matriz[f, c].Numero );
-                            Console.WriteLine( "Modificado: ", carton.Matriz[f, c].Acertado );
                         }//if 
                     }//for columnas
                 }//for filas
             }//foreach
-
-
+         return bolilla;
         }//void
 
 
