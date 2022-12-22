@@ -20,15 +20,18 @@ namespace BingoWebApplication.Controllers {
         }
 
 
-        public bool modificado=false;
+        public static bool cartonesCreados=false;
         public IActionResult Index( ) {
-            if ( modificado!=true) {
+            if ( cartonesCreados!=true) {
                 for ( int i = 0; i < 4; i++ ) {
                     Console.WriteLine( "cargando cartones");
                     listCartones.Add( GetBingoCard( ) );
                 }
             }
-            return View( listCartones );//que se mande una Lista de 4 Cartones
+
+            ViewBag.lista = listCartones;
+            //return View( listCartones );//que se mande una Lista de 4 Cartones
+            return View( );
         }
 
 
@@ -147,7 +150,7 @@ namespace BingoWebApplication.Controllers {
         public int LanzarBolilla( ) {
             //tira bolilla
             bolilla = new Random( ).Next( 1, 91 );
-
+            cartonesCreados = true;
             //comprobar si el num está en los 4 cartones
             foreach (Carton carton in listCartones) {
                 for (int f = 0; f < 3; f++) {
@@ -155,13 +158,14 @@ namespace BingoWebApplication.Controllers {
                         if (carton.Matriz[f, c].Numero == bolilla) {
                             //numero encontrado
                             carton.Matriz[f, c].Acertado = true;
-                            modificado = true;
                         }//if 
                     }//for columnas
                 }//for filas
             }//foreach
+           
          return bolilla;
         }//void
+
 
 
 

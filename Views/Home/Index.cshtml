@@ -1,4 +1,4 @@
-﻿@model List<Carton>
+﻿
 
 @{
     ViewData["Title"] = "Home Page";
@@ -9,44 +9,21 @@
 </div>
 
 
-@{
-    foreach (Carton carton in Model) {
-        <div class="mt-5 container px-5 border" style="width:800px">
-            @{
-                for (int f = 0; f < 3; f++) {
-                    <div class="row border bg-light">
-                        @{
-                            for (int c = 0; c < 9; c++) {
-                                <div class="col numero">
-                                    @if (carton.Matriz[f, c].Numero == 0) {
-                                        <p> </p>
-                                    } else {
-                                        @if (carton.Matriz[f, c].Acertado) {
-                                            <p style="background-color: red">@carton.Matriz[f, c].Numero</p>
-                                        } else {
-                                            <p style="background-color: gray">@carton.Matriz[f, c].Numero </p>
-                                        }
-                                    }
-                                </div>
-                            }
-                        }
-                    </div>
-                }
-            }
-        </div>
-    }//foreach carton
-}
-
-<div>
-    <button onclick="Bolilla()">Bolilla</button>
-    <h2>@ViewBag.Bolilla </h2>
+<div id="cartones">
+            @Html.Partial("_Cartones", (List<Carton>)ViewBag.lista )
 </div>
+
+
+    <button id="btnBolilla" onclick="Bolilla()"> Bolilla </button>
+    <h2 id="resultado"> </h2>
+
+
 
 <script>
     function Bolilla() {
         $.post("/Home/LanzarBolilla", function (resultado) {
-            // devuelto por la función del controlador:
-            alert(resultado);
-        });
+            $("#resultado").text( resultado );
+            $("#cartones").load(location.href + " #cartones");
+        } );
     }
 </script>
