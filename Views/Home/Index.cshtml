@@ -14,16 +14,25 @@
 </div>
 
 
-    <button id="btnBolilla" onclick="Bolilla()"> Bolilla </button>
-    <h2 id="resultado"> </h2>
-
+    <button id="btnBolilla" onclick="Bolilla()"> Lanzar Bolilla </button>
+    <h2>Bolilllas: </h2><h2 id="resultado"> </h2>
+    
+    <div id="listaBolillas">
+            <!--Html.Partial("_ListaBolillas", (Stack<Bolilla>)ViewBag.pilaBolillas )-->
+    <p> @{
+            ViewBag.pilaBolillas;  
+        }</p>
+</div>
 
 
 <script>
     function Bolilla() {
         $.post("/Home/LanzarBolilla", function (resultado) {
             $("#resultado").text( resultado );
+
             $("#cartones").load(location.href + " #cartones");
+            $("#listaBolillas").load(location.href + " #listaBolillas");
         } );
     }
+
 </script>

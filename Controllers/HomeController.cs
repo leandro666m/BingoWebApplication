@@ -6,7 +6,9 @@ using System.Diagnostics;
 namespace BingoWebApplication.Controllers {
     public class HomeController : Controller {
         private readonly ILogger<HomeController> _logger;
-        public static List<Carton> listCartones = new List<Carton>();
+        public static List<Carton> listCartones = new();
+        public int bolilla=0;
+        public static Stack<Bolilla> pilaBolillas = new(); 
 
         public HomeController( ILogger<HomeController> logger ) {
             _logger = logger;
@@ -24,7 +26,6 @@ namespace BingoWebApplication.Controllers {
         public IActionResult Index( ) {
             if ( cartonesCreados!=true) {
                 for ( int i = 0; i < 4; i++ ) {
-                    Console.WriteLine( "cargando cartones");
                     listCartones.Add( GetBingoCard( ) );
                 }
             }
@@ -33,9 +34,6 @@ namespace BingoWebApplication.Controllers {
             //return View( listCartones );//que se mande una Lista de 4 Cartones
             return View( );
         }
-
-
-
 
         public Carton GetBingoCard( ) {
             //-------------------------------generamos los numeros del carton
@@ -146,12 +144,25 @@ namespace BingoWebApplication.Controllers {
             return carton;
         } //GetBingoCard
 
-        public int bolilla=0;
+        
         public int LanzarBolilla( ) {
-            //tira bolilla
             bolilla = new Random( ).Next( 1, 91 );
             cartonesCreados = true;
+
             //comprobar si el num está en los 4 cartones
+            ComprobarCartones( );
+
+            //guardar numero en la Pila
+            Bolilla bol=new();  bol.numero = bolilla; bol.fechaHora = DateTime.Now;
+            pilaBolillas.Push( bol );
+            ViewBag.pilaBolillas = pilaBolillas;
+
+            
+
+         return bolilla;
+        }//void
+
+        public void ComprobarCartones( ) {
             foreach (Carton carton in listCartones) {
                 for (int f = 0; f < 3; f++) {
                     for (int c = 0; c < 9; c++) {
@@ -162,10 +173,7 @@ namespace BingoWebApplication.Controllers {
                     }//for columnas
                 }//for filas
             }//foreach
-           
-         return bolilla;
-        }//void
-
+        }
 
 
 

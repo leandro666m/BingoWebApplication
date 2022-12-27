@@ -1,0 +1,21 @@
+﻿@model Stack<Bolilla>
+
+    <div class="mt-5 container px-5 border" style="width:800px">
+    @{
+
+       // for (int bol=0; bol==Model.Count; bol++ ) {
+
+            <div class="row border bg-light">
+                        <div class="col numero">
+                    
+                        @if (Model.Pop().numero == 0) {
+                    <p> </p>
+                    } else {
+                        <p style="background-color: gray"> |@Model.Pop().numero;| </p>
+                    }
+                        </div>
+                    </div>
+
+      // }
+    }
+    </div>
